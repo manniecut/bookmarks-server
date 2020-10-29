@@ -1,17 +1,14 @@
 const express = require('express')
-
-const cardRouter = express.Router()
-const bodyParser = express.json()
-
+const { v4: uuid } = require('uuid')
+const logger = require('../logger')
 const BOOKMARKS = require('../exampleRes.json')
 
-
-
+const bookmarkIDRouter = express.Router()
 
 const bookmarks = BOOKMARKS.bookmarks;
 
-
-app.get('/bookmarks/:id', (req, res) => {
+bookmarkIDRouter.route('/bookmarks/:id')
+.get((req, res) => {
     const { id } = req.params;
     const bookmark = bookmarks.find(c => c.id == id);
     if (!bookmark) {
@@ -22,8 +19,7 @@ app.get('/bookmarks/:id', (req, res) => {
     }
     res.json(bookmark);
 })
-
-app.delete('/bookmarks/:id', (req, res) => {
+.delete((req, res) => {
     const { id } = req.params;
     const bookmarkIndex = bookmarks.findIndex(li => li.id == id);
     if (bookmarkIndex === -1) {
@@ -35,3 +31,4 @@ app.delete('/bookmarks/:id', (req, res) => {
     res.status(204).end();
 });
 
+module.exports = bookmarkIDRouter;

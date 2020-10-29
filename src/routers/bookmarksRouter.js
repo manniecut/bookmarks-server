@@ -1,11 +1,10 @@
 const express = require('express')
+const { v4: uuid } = require('uuid')
+const logger = require('../logger')
+const BOOKMARKS = require('../exampleRes.json')
 
-const cardRouter = express.Router()
-//const bodyParser = express.json()
 const bookmarksRouter = express.Router()
 
-
-const BOOKMARKS = require('../exampleRes.json')
 const bookmarks = BOOKMARKS.bookmarks;
 
 bookmarksRouter.route('/bookmarks')

@@ -3,28 +3,10 @@ const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const helmet = require('helmet')
-const winston = require('winston');
-const { v4: uuid } = require('uuid');
 const { NODE_ENV } = require('./config');
 const bookmarksRouter=require('./routers/bookmarksRouter');
-const bookmarksIDRouter=require('./routers/bookmarksIDRouter');
+const bookmarkIDRouter=require('./routers/bookmarkIDRouter');
 
-
-
-/*************************LOGGING********************************** */
-
-const logger = winston.createLogger({
-    level: 'info',
-    format: winston.format.json(),
-    transports: [
-        new winston.transports.File({ filename: 'info.log' })
-    ]
-})
-if (NODE_ENV !== 'production') {
-    logger.add(new winston.transports.Console({
-        format: winston.format.simple()
-    }))
-}
 
 /************************MIDDLEWARE************************************* */
 
@@ -49,47 +31,10 @@ app.use(function validateBearerToken(req, res, next) {
 
 
 
-/*************************ENDPOINTS******************************* */
+/********************ENDPOINTS*************** */
 
 app.use(bookmarksRouter)
-app.use(bookmarksIDRouter)
-
-
-bookmarksIDRouter.route('/bookmarks/:id')
-    .get((req, res) => { })
-    .delete((req, res) => { })
-
-
-
-
-/**/
-
-const bookmarks = BOOKMARKS.bookmarks;
-
-app.get('/bookmarks/:id', (req, res) => {
-    const { id } = req.params;
-    const bookmark = bookmarks.find(c => c.id == id);
-    if (!bookmark) {
-        logger.error(`Bookmark with id ${id} not found.`);
-        return res
-            .status(404)
-            .send('Bookmark not found')
-    }
-    res.json(bookmark);
-})
-
-app.delete('/bookmarks/:id', (req, res) => {
-    const { id } = req.params;
-    const bookmarkIndex = bookmarks.findIndex(li => li.id == id);
-    if (bookmarkIndex === -1) {
-        logger.error(`Bookmark ${id} not found.`);
-        return res.status(404).send('Not Found')
-    }
-    bookmarks.splice(bookmarkIndex, 1);
-    logger.info(`Bookmark ${id} deleted.`);
-    res.status(204).end();
-});
-
+app.use(bookmarkIDRouter)
 
 /***********************ERROR**************** */
 
